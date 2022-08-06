@@ -1,0 +1,21 @@
+<html>
+<head>
+<title>concert</title>
+</head>
+<body>
+<center>
+<h1>{{.artist}}</h1>
+<form method="post" action="Set">
+<input type="hidden" name="artist" value="{{.artist}}">
+<p>
+    <select name="live">
+        {{range .liveList}}
+        <option value="{{.}}">{{.}}</option>
+        {{end}}
+    </select>
+    </p>
+    <p><input type="submit" value="GO!! GO!!"></p>
+</form>
+</center>
+</body>
+</html>

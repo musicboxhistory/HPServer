@@ -36,13 +36,13 @@ func setLiveData() error {
 			setLists[sheet.Name] = make([]SetListData, 0)
 			for idx := 0; idx < sheet.MaxRow; idx++ {
 				var setList SetListData
-				cell, _ := sheet.Cell(idx, 0)
+				cell := sheet.Cell(idx, 0)
 				setList.Num = cell.Value
-				cell, _ = sheet.Cell(idx, 1)
+				cell = sheet.Cell(idx, 1)
 				setList.Music = cell.Value
-				cell, _ = sheet.Cell(idx, 2)
+				cell = sheet.Cell(idx, 2)
 				setList.Property = cell.Value
-				cell, _ = sheet.Cell(idx, 3)
+				cell = sheet.Cell(idx, 3)
 				setList.Member = cell.Value
 				setLists[sheet.Name] = append(setLists[sheet.Name], setList)
 			}
@@ -98,6 +98,49 @@ func liveListPrint(c *gin.Context) {
 	c.JSON(http.StatusOK, liveListData)
 }
 
+func artistPrint(c *gin.Context) {
+	c.HTML(http.StatusOK, "artist.html", gin.H{})
+}
+
+func livePrint(c *gin.Context) {
+	// Init Data
+	liveListData := make([]string, 0)
+	artist := c.PostForm("artist")
+
+	// Value Check
+	if liveList[artist] == nil {
+		fmt.Printf("Not Group\n")
+		c.HTML(http.StatusNotFound, "notfound.html", gin.H{})
+		return
+	}
+
+	// Set Live List
+	for key, _ := range liveList[artist] {
+		liveListData = append(liveListData, key)
+	}
+
+	c.HTML(http.StatusOK, "live.html", gin.H{"liveList": liveListData, "artist": artist})
+}
+
+func setPrint(c *gin.Context) {
+
+	// Get Post Info
+	artist := c.PostForm("artist")
+	live := c.PostForm("live")
+
+	fmt.Printf("artist = %s¥n", artist)
+	fmt.Printf("live = %s¥n", live)
+
+	// Value Check
+	if liveList[artist][live] == nil {
+		fmt.Printf("Not Group or Not Live\n")
+		c.HTML(http.StatusNotFound, "notfound.html", gin.H{})
+		return
+	}
+
+	c.HTML(http.StatusOK, "set.html", gin.H{"liveList": liveList[artist][live], "artist": artist, "live": live})
+}
+
 func main() {
 	// Set Live Data
 	err := setLiveData()
@@ -108,6 +151,10 @@ func main() {
 
 	// HTTP Server Start
 	r := gin.Default()
+	r.LoadHTMLGlob("./html/*.html")
+	r.GET("/HelloProject/Concert", artistPrint)
+	r.POST("/HelloProject/Live", livePrint)
+	r.POST("/HelloProject/Set", setPrint)
 	r.GET("/HelloProject/SetList", groupListPrint)
 	r.GET("/HelloProject/SetList/:group", liveListPrint)
 	r.GET("/HelloProject/SetList/:group/:live", setListPrint)

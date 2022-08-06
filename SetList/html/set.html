@@ -1,0 +1,22 @@
+<html>
+<head>
+<title>setlist</title>
+</head>
+<body>
+<center>
+<h1>{{.live}}</h1>
+<div style="width: 100%; font-size: 40px; font-weight: bold; text-align: center;">
+</div>
+<table border="1" width="500" cellspacing="0" cellpadding="5">
+    {{range .liveList}}
+    <tr>
+    <th>{{.Num}}</th>
+    <th>{{.Music}}</th>
+    <th>{{.Property}}</th>
+    <th>{{.Member}}</th>
+    </tr>
+    {{end}}
+</table>
+</center>
+</body>
+</html>
