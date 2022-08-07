@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"sort"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tealeg/xlsx"
@@ -95,6 +96,9 @@ func liveListPrint(c *gin.Context) {
 		liveListData = append(liveListData, key)
 	}
 
+	// sort
+	sort.Slice(liveListData, func(i, j int) bool { return liveListData[i] < liveListData[j] })
+
 	c.JSON(http.StatusOK, liveListData)
 }
 
@@ -118,6 +122,9 @@ func livePrint(c *gin.Context) {
 	for key, _ := range liveList[artist] {
 		liveListData = append(liveListData, key)
 	}
+
+	// sort
+	sort.Slice(liveListData, func(i, j int) bool { return liveListData[i] < liveListData[j] })
 
 	c.HTML(http.StatusOK, "live.html", gin.H{"liveList": liveListData, "artist": artist})
 }
