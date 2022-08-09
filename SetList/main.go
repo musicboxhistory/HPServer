@@ -173,6 +173,7 @@ func main() {
 			err := setLiveData()
 			if err != nil {
 				fmt.Println("setLiveData NG")
+				mutex.Unlock()
 				return
 			}
 			mutex.Unlock()
