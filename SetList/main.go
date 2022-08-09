@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 	"sort"
+	"sync"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/tealeg/xlsx"
@@ -17,6 +19,7 @@ type SetListData struct {
 }
 
 var liveList map[string]map[string][]SetListData
+var mutex sync.RWMutex
 
 func setLiveData() error {
 	// Init Data
@@ -78,6 +81,11 @@ func setListPrint(c *gin.Context) {
 }
 
 func liveListPrint(c *gin.Context) {
+
+	// Mutex Lock
+	mutex.RLock()
+	defer mutex.RUnlock()
+
 	// Init Data
 	liveListData := make([]string, 0)
 
@@ -107,6 +115,11 @@ func artistPrint(c *gin.Context) {
 }
 
 func livePrint(c *gin.Context) {
+
+	// Mutex Lock
+	mutex.RLock()
+	defer mutex.RUnlock()
+
 	// Init Data
 	liveListData := make([]string, 0)
 	artist := c.PostForm("artist")
@@ -131,6 +144,10 @@ func livePrint(c *gin.Context) {
 
 func setPrint(c *gin.Context) {
 
+	// Mutex Lock
+	mutex.RLock()
+	defer mutex.RUnlock()
+
 	// Get Post Info
 	artist := c.PostForm("artist")
 	live := c.PostForm("live")
@@ -150,11 +167,18 @@ func setPrint(c *gin.Context) {
 
 func main() {
 	// Set Live Data
-	err := setLiveData()
-	if err != nil {
-		fmt.Println("setLiveData NG")
-		return
-	}
+	go func() {
+		for {
+			mutex.Lock()
+			err := setLiveData()
+			if err != nil {
+				fmt.Println("setLiveData NG")
+				return
+			}
+			mutex.Unlock()
+			time.Sleep(3600 * time.Second)
+		}
+	}()
 
 	// HTTP Server Start
 	r := gin.Default()
