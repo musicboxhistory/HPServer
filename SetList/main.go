@@ -184,6 +184,7 @@ func main() {
 	// HTTP Server Start
 	r := gin.Default()
 	r.LoadHTMLGlob("./html/*.html")
+	r.Static("/assets", "./assets")
 	r.GET("/HelloProject/Concert", artistPrint)
 	r.POST("/HelloProject/Live", livePrint)
 	r.POST("/HelloProject/Set", setPrint)

@@ -6,10 +6,6 @@
 <body>
 <center>
 <h1>{{ .artist }}</h1>
-{{ if eq .artist "hello"}}
-{{ else if eq .artis "angerme"}}
-{{ else }}
-{{ end }}
 <form method="post" action="Set">
 <input type="hidden" name="artist" value="{{.artist}}">
 <p>

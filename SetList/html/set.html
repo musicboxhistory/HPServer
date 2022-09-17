@@ -2,6 +2,7 @@
 <head>
 <title>setlist</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" type="text/css" href="//localhost/assets/base.css">
 </head>
 <body>
 <center>
@@ -9,12 +10,19 @@
 <div style="width: 100%; font-size: 40px; font-weight: bold; text-align: center;">
 </div>
 <table border="1" width="500" cellspacing="0" cellpadding="5">
-    {{range .liveList}}
+    {{range $idx, $val := .liveList}}
     <tr>
-    <th align="left" nowrap>{{.Num}}</th>
-    <th align="left" nowrap>{{.Music}}</th>
-    <th align="left" nowrap>{{.Property}}</th>
-    <th align="left" nowrap>{{.Member}}</th>
+    {{ if eq $idx 0 }}
+    <th>{{$val.Num}}</th>
+    <th>{{$val.Music}}</th>
+    <th>{{$val.Property}}</th>
+    <th>{{$val.Member}}</th>
+    {{ else }}
+    <td>{{$val.Num}}</th>
+    <td>{{$val.Music}}</th>
+    <td>{{$val.Property}}</th>
+    <td>{{$val.Member}}</th>
+    {{ end }}
     </tr>
     {{end}}
 </table>
